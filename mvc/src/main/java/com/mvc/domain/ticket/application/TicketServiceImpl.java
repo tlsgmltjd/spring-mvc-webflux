@@ -1,6 +1,5 @@
 package com.mvc.domain.ticket.application;
 
-import com.mvc.domain.ticket.dto.TicketIssueDto;
 import com.mvc.domain.ticket.persistence.Ticket;
 import com.mvc.domain.ticket.persistence.TicketRepository;
 import com.mvc.domain.ticket.persistence.TicketUser;
@@ -21,10 +20,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public void issue(TicketIssueDto dto) {
-        Long userId = dto.getUserId();
-        Long ticketId = dto.getTicketId();
-
+    public void issue(Long userId, Long ticketId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
 

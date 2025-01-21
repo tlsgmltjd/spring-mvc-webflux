@@ -2,7 +2,6 @@ package com.webflux.domain.ticket.presentation;
 
 
 import com.webflux.domain.ticket.application.TicketService;
-import com.webflux.domain.ticket.dto.TicketIssueDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,11 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping("/issue")
-    public Mono<ResponseEntity<Void>> issueTicket(@RequestBody TicketIssueDto dto) {
-        return ticketService.issue(dto)
+    public Mono<ResponseEntity<Void>> issueTicket(
+            @RequestParam Long userId,
+            @RequestParam Long ticketId
+    ) {
+        return ticketService.issue(userId, ticketId)
                 .then(Mono.just(ResponseEntity.ok().build()));
     }
 }

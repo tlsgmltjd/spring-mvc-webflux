@@ -1,13 +1,9 @@
 package com.mvc.domain.ticket.presentation;
 
 import com.mvc.domain.ticket.application.TicketService;
-import com.mvc.domain.ticket.dto.TicketIssueDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ticket")
@@ -18,9 +14,10 @@ public class TickerController {
 
     @PostMapping("/issue")
     public ResponseEntity<Void> issue(
-            @RequestBody TicketIssueDto dto
+            @RequestParam Long userId,
+            @RequestParam Long ticketId
     ) {
-        ticketService.issue(dto);
+        ticketService.issue(userId, ticketId);
         return ResponseEntity.ok().build();
     }
 
