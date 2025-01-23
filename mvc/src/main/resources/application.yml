@@ -12,4 +12,10 @@ spring:
   sql:
     init:
       mode: always
-
+#server:
+#  tomcat:
+#    max-connections: 10000
+#    accept-count: 1000
+#    threads:
+#      max: 3000
+#      min-spare: 1000

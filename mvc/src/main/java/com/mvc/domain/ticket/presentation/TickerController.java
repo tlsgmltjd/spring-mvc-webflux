@@ -5,11 +5,14 @@ import com.mvc.domain.ticket.dto.TicketDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/ticket")
 @RequiredArgsConstructor
 public class TickerController {
+
+    private final RestTemplate restTemplate;
 
     private final TicketService ticketService;
 
@@ -28,6 +31,12 @@ public class TickerController {
     ) {
         TicketDto dto = ticketService.queryTicket(ticketId);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        ResponseEntity<String> response = restTemplate.getForEntity("https://httpbin.org/delay/2", String.class);
+        return response;
     }
 
 }
