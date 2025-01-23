@@ -13,6 +13,3 @@ spring:
     init:
       mode: always
 
-logging:
-  level:
-    org.springframework.jdbc.core: debug

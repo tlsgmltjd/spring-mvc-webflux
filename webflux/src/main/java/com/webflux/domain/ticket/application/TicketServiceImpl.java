@@ -1,5 +1,7 @@
 package com.webflux.domain.ticket.application;
 
+import com.webflux.domain.ticket.dto.TicketDto;
+import com.webflux.domain.ticket.dto.TicketUserDto;
 import com.webflux.domain.ticket.persistence.TicketRepository;
 import com.webflux.domain.ticket.persistence.TicketUser;
 import com.webflux.domain.ticket.persistence.TicketUserRepository;
@@ -20,18 +22,46 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public Mono<Void> issue(Long userId, Long ticketId) {
-        return userRepository.findById(userId)
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found")))
-                .flatMap(user ->
+        return Mono.zip(
+                        userRepository.findById(userId),
                         ticketRepository.findById(ticketId)
-                                .switchIfEmpty(Mono.error(new RuntimeException("Ticket not found")))
-                                .flatMap(ticket -> {
-                                    ticket.addCount();
-                                    TicketUser ticketUser = TicketUser.of(user.getId());
-                                    return ticketRepository.save(ticket)
-                                            .then(ticketUserRepository.save(ticketUser));
-                                })
                 )
-                .then();
+                .flatMap(tuple -> {
+                    var user = tuple.getT1();
+                    var ticket = tuple.getT2();
+
+                    ticket.addCount();
+                    TicketUser ticketUser = TicketUser.of(user.getId());
+
+                    return Mono.zip(
+                            ticketRepository.save(ticket),
+                            ticketUserRepository.save(ticketUser)
+                    ).then();
+                });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Mono<TicketDto> queryTicket(Long ticketId) {
+        return ticketRepository.findById(ticketId)
+                .flatMap(ticket ->
+                        ticketUserRepository.find50()
+                                .flatMap(ticketUser ->
+                                        userRepository.findById(ticketUser.getUserId())
+                                                .map(user -> TicketUserDto.builder()
+                                                        .userId(ticketUser.getUserId())
+                                                        .name(user.getName())
+                                                        .build())
+                                )
+                                .collectList()
+                                .map(ticketUsers -> TicketDto.builder()
+                                        .ticketId(ticket.getId())
+                                        .ticketName(ticket.getName())
+                                        .count(ticket.getCount())
+                                        .limitCount(ticket.getLimitCount())
+                                        .ticketUsers(ticketUsers)
+                                        .build()
+                                )
+                );
     }
 }

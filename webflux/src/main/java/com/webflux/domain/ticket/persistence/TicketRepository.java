@@ -1,6 +1,6 @@
 package com.webflux.domain.ticket.persistence;
 
-import org.springframework.data.r2dbc.repository.R2dbcRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-public interface TicketRepository extends R2dbcRepository<Ticket, Long> {
+public interface TicketRepository extends ReactiveCrudRepository<Ticket, Long> {
 }

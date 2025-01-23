@@ -1,8 +1,10 @@
 package com.mvc.domain.ticket.persistence;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "tbl_ticket")
 public class Ticket {
 

@@ -6,6 +6,3 @@ spring:
   sql:
     init:
       mode: always
-logging:
-  level:
-    org.springframework.r2dbc.core: debug
