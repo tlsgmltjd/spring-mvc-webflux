@@ -2,9 +2,11 @@ package com.webflux.domain.ticket.application;
 
 import com.webflux.domain.ticket.dto.TicketDto;
 import com.webflux.domain.ticket.dto.TicketUserDto;
+import com.webflux.domain.ticket.persistence.Ticket;
 import com.webflux.domain.ticket.persistence.TicketRepository;
 import com.webflux.domain.ticket.persistence.TicketUser;
 import com.webflux.domain.ticket.persistence.TicketUserRepository;
+import com.webflux.domain.user.persistence.User;
 import com.webflux.domain.user.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,8 @@ public class TicketServiceImpl implements TicketService {
                         ticketRepository.findById(ticketId)
                 )
                 .flatMap(tuple -> {
-                    var user = tuple.getT1();
-                    var ticket = tuple.getT2();
+                    User user = tuple.getT1();
+                    Ticket ticket = tuple.getT2();
 
                     ticket.addCount();
                     TicketUser ticketUser = TicketUser.of(user.getId());
